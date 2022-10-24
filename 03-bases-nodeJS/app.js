@@ -1,6 +1,7 @@
 const {multiplicar} = require("./helpers/multiplicacion");
+const {argv}=require("./config/yargsConfig.js")
 console.clear();
-const base = 10
-multiplicar(base)
+
+multiplicar(argv)
     .then(res => {console.log(res)})
     .catch(err =>{console.log(err)})

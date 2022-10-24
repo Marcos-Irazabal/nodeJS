@@ -1,14 +1,19 @@
 const fs = require('fs');
 
-multiplicar= async(n) =>{
+multiplicar= async(argv) =>{
+    base=argv.base;
+    show=argv.listar;
+    until=argv.hasta;
     try{
         let texto = "";
-        for (i=1; i<=10; i++){
-            texto= texto + (n+" x "+i+" = "+n*i)+ "\n";
+        for (i=1; i<=until; i++){
+            texto= texto + (base+" x "+i+" = "+base*i)+ "\n";
         }
-        console.log(texto)
-        fs.writeFileSync("tabla-"+n+".txt" , texto);
-        return("Tabla del "+n+" creada")
+        if(show){
+            console.log(texto)
+        }
+        fs.writeFileSync("./output/tabla-"+base+".txt" , texto);
+        return("Tabla del "+base+" creada")
     }catch(err){
         throw(err);
     }
