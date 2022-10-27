@@ -24,6 +24,14 @@ const questions = [{
             name:"List tasks "
         },
         {
+            value:"3",
+            name:"mark completed"
+        },
+        {
+            value:"4",
+            name:"delete task"
+        },
+        {
             value:"0",
             name:"exit"
         },
