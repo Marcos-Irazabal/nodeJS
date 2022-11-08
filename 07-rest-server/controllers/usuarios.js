@@ -1,34 +1,66 @@
 const { response, request } = require('express');
+const User = require("../models/user.model.js")
+const bcrypt = require("bcryptjs") ;
 
 
-const usuariosGet = (req = request, res = response) => {
+const usuariosGet =async (req = request, res = response) => {
+    const {limit = 5, from =0}=req.query; //parametros del URL
+    const queryTotal = {state:true}
+    /* estas funciones ahora las pongo en el Promise,all([])
+    const users =await User.find(queryTotal)
+        .skip(Number(from))
+        .limit(Number(limit))
+    ;
+    const total =await User.countDocuments(queryTotal);
+    */
 
-    const { q, nombre = 'No name', apikey, page = 1, limit } = req.query;
+
+    //lo siguiente es para poder ejecutar las funciones q usan un await al mismo tiempo
+    //asi no se frena el codigo 2 veces
+    //hace todas las funciones async q esten en el arreglo al mimso tiempo
+    const response = await Promise.all([
+        //promesa 1
+        User.find(queryTotal)
+            .skip(Number(from))
+            .limit(Number(limit)) ,
+        //promesa 2
+        User.countDocuments(queryTotal)
+    ])
+
+    //desestructuro para q no me quede la respuesta como un arreglo
+    let [total,users]=response
 
     res.json({
-        msg: 'get API - controlador',
-        q,
-        nombre,
-        apikey,
-        page, 
-        limit
+        total,
+        users
     });
 }
 
-const usuariosPost = (req, res = response) => {
+const usuariosPost = async(req, res = response) => {
 
-    const { nombre, edad } = req.body;
+    const {name,password,email,role} = req.body;
+    const user=new User({name,password,email,role});
+
+    salt=bcrypt.genSaltSync();
+    user.password=bcrypt.hashSync(password,salt)
+
+    user.save();
 
     res.json({
-        msg: 'post API - usuariosPost',
-        nombre, 
-        edad
+        user
     });
 }
 
-const usuariosPut = (req, res = response) => {
+const usuariosPut = async(req, res = response) => {
 
     const { id } = req.params;
+    const {_id, password,google,email,...rest}=req.body;
+
+    if (password){
+        salt=bcrypt.genSaltSync();
+        rest.password=bcrypt.hashSync(password,salt)
+    }
+    const user = await User.findByIdAndUpdate(id,rest)
 
     res.json({
         msg: 'put API - usuariosPut',
@@ -42,9 +74,16 @@ const usuariosPatch = (req, res = response) => {
     });
 }
 
-const usuariosDelete = (req, res = response) => {
+const usuariosDelete = async (req, res = response) => {
+    const {id}=req.params
+    //eliminacion fisica
+    //const user =await User.findByIdAndDelete(id);
+
+    //eliminacion logica
+    const user =await User.findByIdAndUpdate(id,)
+    
     res.json({
-        msg: 'delete API - usuariosDelete'
+        user
     });
 }
 
