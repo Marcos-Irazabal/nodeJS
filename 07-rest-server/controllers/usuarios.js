@@ -80,7 +80,7 @@ const usuariosDelete = async (req, res = response) => {
     //const user =await User.findByIdAndDelete(id);
 
     //eliminacion logica
-    const user =await User.findByIdAndUpdate(id,)
+    const user =await User.findByIdAndUpdate(id,{state:false})
     
     res.json({
         user
