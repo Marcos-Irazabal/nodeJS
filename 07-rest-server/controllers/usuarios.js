@@ -14,7 +14,6 @@ const usuariosGet =async (req = request, res = response) => {
     const total =await User.countDocuments(queryTotal);
     */
 
-
     //lo siguiente es para poder ejecutar las funciones q usan un await al mismo tiempo
     //asi no se frena el codigo 2 veces
     //hace todas las funciones async q esten en el arreglo al mimso tiempo
@@ -64,7 +63,7 @@ const usuariosPut = async(req, res = response) => {
 
     res.json({
         msg: 'put API - usuariosPut',
-        id
+        user
     });
 }
 
@@ -75,16 +74,16 @@ const usuariosPatch = (req, res = response) => {
 }
 
 const usuariosDelete = async (req, res = response) => {
-    const {id}=req.params
+    const { id }=req.params
     //eliminacion fisica
     //const user =await User.findByIdAndDelete(id);
 
     //eliminacion logica
-    const user =await User.findByIdAndUpdate(id,{state:false})
+    const deletedUser =await User.findByIdAndUpdate(id,{state:false})
+
+    const autenticatedUser = req.user
     
-    res.json({
-        user
-    });
+    res.json({deletedUser,autenticatedUser});
 }
 
 //

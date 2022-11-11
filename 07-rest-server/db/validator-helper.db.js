@@ -17,7 +17,7 @@ const isEmailUsed=async(email)=>{
 }
 
 const existsUserById=async(id)=>{
-    const existingUser=await User.findById({id})
+    const existingUser=await User.findById(id)
     if (!existingUser){
         throw new Error("el id "+id+" no existe")
     }
