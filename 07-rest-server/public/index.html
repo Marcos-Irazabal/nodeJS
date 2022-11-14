@@ -8,8 +8,53 @@
 </head>
 <body>
 
-    <h1>MAIN INDEX
-    </h1>
-    
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        function handleCredentialResponse(response) {
+            //Google token : ID_TOKEN
+            const body={id_token:response.credential};
+            fetch("http://localhost:8080/api/auth/google",{
+                method:"POST",
+                headers: {
+                    "Content-type":"application/json"
+                },
+                body:JSON.stringify(body)
+            })
+                .then(resp=>resp.json())
+                .then(resp=>{
+                    console.log(resp)
+                    localStorage.setItem("email_user_connected",resp.user.email)
+                })
+                .catch(console.warn);
+        }
+      </script>
+
+      <script>
+        const button_logout = document.getElementById("google_singout")
+        button_logout.onclick = async ()=>{
+            //google.account.id aca adentro tengo acceso a muchos datos y metodos, el de singout es el revoke
+            google.account.id.revoke(localStorage.getItem("email_user_connected"),func_when_done=>{
+                //una vez que cierro la session, debo limpiar lo que guarde en el localstorage
+                localStorage.clear();
+                location.reload();
+            })
+        }
+      </script>
+
+      <div id="g_id_onload"
+         data-client_id="144264502429-2lhjrluoq19erd23iuktpm50jesi5csm.apps.googleusercontent.com"
+         data-auto_prompt="false"
+         data-callback="handleCredentialResponse">
+      </div>
+      <div class="g_id_signin"
+         data-type="standard"
+         data-size="large"
+         data-theme="outline"
+         data-text="sign_in_with"
+         data-shape="rectangular"
+         data-logo_alignment="left">
+      </div>
+
+      <button id="google_singout" >Singout</button>
 </body>
 </html>
